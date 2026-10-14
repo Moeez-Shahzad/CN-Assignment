@@ -1,0 +1,22 @@
+/* style.css
+   Custom styles for the University Research Opportunity Portal.
+   Bootstrap handles most of the layout; these are small project tweaks. */
+
+/* Give the opportunity description a little breathing room in the modal. */
+#detailsModal .modal-body dt {
+  font-weight: 600;
+}
+
+#detailsModal .modal-body dd {
+  margin-bottom: 0.75rem;
+}
+
+/* Fixed container for the auto-dismissing alerts, top-right of the screen. */
+#alert-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1080; /* above Bootstrap modals' backdrop */
+  min-width: 300px;
+  max-width: 90vw;
+}
