@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Research Opportunity Portal</title>
+
+    <!-- Bootstrap 5 via CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Our own styles -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <span class="navbar-brand mb-0 h1">Research Opportunity Portal</span>
+        <button
+          type="button"
+          class="btn btn-light"
+          id="add-new-btn"
+        >
+          + Add New Opportunity
+        </button>
+      </div>
+    </nav>
+
+    <!-- Container for auto-dismissing alerts -->
+    <div id="alert-container"></div>
+
+    <!-- Main area -->
+    <main class="container py-4">
+      <h2 class="h4 mb-4">Available Opportunities</h2>
+
+      <!-- Opportunity cards are rendered here by js/app.js -->
+      <div class="row g-4" id="opportunity-list"></div>
+    </main>
+
+    <!-- Add / Edit modal: one form reused for both create and update -->
+    <div
+      class="modal fade"
+      id="formModal"
+      tabindex="-1"
+      aria-labelledby="formModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <!-- novalidate: we run our own validation and show custom feedback -->
+          <form id="opportunity-form" novalidate>
+            <div class="modal-header">
+              <h5 class="modal-title" id="formModalLabel">Add New Opportunity</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <div class="modal-body">
+              <!-- Hidden id: empty means "create", set means "edit" -->
+              <input type="hidden" id="field-id" />
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="field-title" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="field-title" name="title" />
+                  <div class="invalid-feedback">Title is required.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="field-research_area" class="form-label">Research Area</label>
+                  <input type="text" class="form-control" id="field-research_area" name="research_area" />
+                  <div class="invalid-feedback">Research area is required.</div>
+                </div>
+
+                <div class="col-12">
+                  <label for="field-description" class="form-label">Description</label>
+                  <textarea class="form-control" id="field-description" name="description" rows="3"></textarea>
+                  <div class="invalid-feedback">Description is required.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="field-faculty_name" class="form-label">Faculty Name</label>
+                  <input type="text" class="form-control" id="field-faculty_name" name="faculty_name" />
+                  <div class="invalid-feedback">Faculty name is required.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="field-department" class="form-label">Department</label>
+                  <input type="text" class="form-control" id="field-department" name="department" />
+                  <div class="invalid-feedback">Department is required.</div>
+                </div>
+
+                <div class="col-12">
+                  <label for="field-required_skills" class="form-label">Required Skills</label>
+                  <input type="text" class="form-control" id="field-required_skills" name="required_skills" />
+                  <div class="invalid-feedback">Required skills are required.</div>
+                </div>
+
+                <div class="col-md-4">
+                  <label for="field-positions" class="form-label">Positions</label>
+                  <input type="number" min="0" step="1" class="form-control" id="field-positions" name="positions" />
+                  <div class="invalid-feedback">Positions must be a non-negative integer.</div>
+                </div>
+
+                <div class="col-md-4">
+                  <label for="field-deadline" class="form-label">Deadline</label>
+                  <input type="date" class="form-control" id="field-deadline" name="deadline" />
+                  <div class="invalid-feedback">A valid deadline date is required.</div>
+                </div>
+
+                <div class="col-md-4">
+                  <label for="field-status" class="form-label">Status</label>
+                  <select class="form-select" id="field-status" name="status">
+                    <option value="Open">Open</option>
+                    <option value="Closed">Closed</option>
+                  </select>
+                  <div class="invalid-feedback">Status is required.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary" id="form-submit-btn">
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details modal: shows ALL fields of a single opportunity -->
+    <div
+      class="modal fade"
+      id="detailsModal"
+      tabindex="-1"
+      aria-labelledby="detailsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="detailsModalLabel">Opportunity Details</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="detailsModalBody"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS bundle via CDN (needed for modal + alerts) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Our scripts: api.js must load before app.js -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
