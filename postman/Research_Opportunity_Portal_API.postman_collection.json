@@ -1,0 +1,350 @@
+{
+  "info": {
+    "name": "Research Opportunity Portal API",
+    "description": "API tests for the University Research Opportunity Portal. Run the requests in order (top to bottom). 'Create Opportunity #1' saves its returned id into the {{id}} collection variable, which the later single-record requests (Get One, Update, Close, Delete, Get Deleted) reuse.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Create Opportunity #1 (AI)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "// Save the new record's id so later requests can target it.",
+              "const body = pm.response.json();",
+              "pm.test('Response has an id', function () {",
+              "    pm.expect(body).to.have.property('id');",
+              "});",
+              "if (body && body.id) {",
+              "    pm.collectionVariables.set('id', body.id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"AI Research Assistant\",\n  \"description\": \"Assist with designing and training deep learning models for a university research lab. Involves data preparation, experiment tracking, and reporting results.\",\n  \"research_area\": \"Artificial Intelligence\",\n  \"faculty_name\": \"Dr. Ayesha Khan\",\n  \"department\": \"Computer Science\",\n  \"required_skills\": \"Python, PyTorch, Linear Algebra, Git\",\n  \"positions\": 2,\n  \"deadline\": \"2026-12-31\",\n  \"status\": \"Open\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    },
+    {
+      "name": "2. Create Opportunity #2 (NLP)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"NLP Research Intern\",\n  \"description\": \"Work on natural language processing tasks including text classification, named entity recognition, and building datasets for low-resource languages.\",\n  \"research_area\": \"Natural Language Processing\",\n  \"faculty_name\": \"Dr. Bilal Ahmed\",\n  \"department\": \"Computer Science\",\n  \"required_skills\": \"Python, Transformers, spaCy, Data Annotation\",\n  \"positions\": 3,\n  \"deadline\": \"2027-01-15\",\n  \"status\": \"Open\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    },
+    {
+      "name": "3. Create Opportunity #3 (Computer Vision)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Computer Vision Research Associate\",\n  \"description\": \"Develop and evaluate image recognition and object detection models for a smart campus project. Includes dataset collection and model deployment.\",\n  \"research_area\": \"Computer Vision\",\n  \"faculty_name\": \"Dr. Sana Malik\",\n  \"department\": \"Electrical Engineering\",\n  \"required_skills\": \"Python, OpenCV, TensorFlow, CNNs\",\n  \"positions\": 1,\n  \"deadline\": \"2026-11-20\",\n  \"status\": \"Open\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    },
+    {
+      "name": "4. Get All Opportunities",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array', function () {",
+              "    pm.expect(pm.response.json()).to.be.an('array');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    },
+    {
+      "name": "5. Get One Opportunity by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Returned record id matches {{id}}', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(String(body.id)).to.eql(String(pm.collectionVariables.get('id')));",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "6. Update Opportunity (title/skills/positions/deadline)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Fields were updated', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body.title).to.eql('Senior AI Research Assistant');",
+              "    pm.expect(body.positions).to.eql(4);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Senior AI Research Assistant\",\n  \"required_skills\": \"Python, PyTorch, CUDA, Distributed Training\",\n  \"positions\": 4,\n  \"deadline\": \"2027-03-01\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "7. Close Opportunity (Open -> Closed)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Status is now Closed', function () {",
+              "    pm.expect(pm.response.json().status).to.eql('Closed');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Closed\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "8. Delete Opportunity",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Returns success message', function () {",
+              "    pm.expect(pm.response.json().message).to.eql('Opportunity deleted successfully');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "9. Get Deleted Opportunity (expect 404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test('Returns a message', function () {",
+              "    pm.expect(pm.response.json()).to.have.property('message');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities/{{id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "10. Create with Invalid/Missing Data (expect 400)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 400', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test('Returns validation errors', function () {",
+              "    const body = pm.response.json();",
+              "    pm.expect(body).to.have.property('message');",
+              "    pm.expect(body).to.have.property('errors');",
+              "    pm.expect(body.errors).to.be.an('array');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"   \",\n  \"research_area\": \"Internet of Things\",\n  \"positions\": -3,\n  \"deadline\": \"2025-13-40\",\n  \"status\": \"Maybe\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/opportunities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "opportunities"]
+        }
+      }
+    }
+  ]
+}
